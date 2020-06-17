@@ -1,6 +1,6 @@
 
 import mapboxgl from 'mapbox-gl'; //import from the node modules
-
+import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
 
 const fitMapToMarkers = (map, markers) => {
   const bounds = new mapboxgl.LngLatBounds();
@@ -17,17 +17,32 @@ const initMapbox = () => {
     mapboxgl.accessToken = mapElement.dataset.mapboxApiKey;
     const map = new mapboxgl.Map({
       container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v10'
+      style: 'mapbox://styles/ellyn/ckbj3e3wv1zql1itlckederkz'
     });
+
     // add the code of the markers
     const markers = JSON.parse(mapElement.dataset.markers);
     markers.forEach((marker) => {
-      new mapboxgl.Marker()
-        .setLngLat([ marker.lng, marker.lat ])
-        .addTo(map);
-    });
-    // call the function fitMapToMarkers
-    fitMapToMarkers(map, markers);
+      const popup = new mapboxgl.Popup().setHTML(marker.infoWindow); //popup window is created
+
+      // Create a HTML element for your custom marker le wagon
+      const element = document.createElement('div');
+      element.className = 'marker';
+      element.style.backgroundImage = `url('${marker.image_url}')`;
+      element.style.backgroundSize = 'contain';
+      element.style.width = '25px';
+      element.style.height = '25px';
+
+        new mapboxgl.Marker(element)
+          .setLngLat([ marker.lng, marker.lat ])
+          .setPopup(popup)
+          .addTo(map);
+      });
+      // call the function fitMapToMarkers
+      fitMapToMarkers(map, markers);
+      // adding the search box that will be used to search with autocomplete
+      map.addControl(new MapboxGeocoder({ accessToken: mapboxgl.accessToken,
+                                      mapboxgl: mapboxgl }));
   }
 };
 
