@@ -12,7 +12,7 @@ class FlatsController < ApplicationController
         lat: flat.latitude,
         lng: flat.longitude,
         infoWindow: render_to_string(partial: "info_window", locals: { flat: flat }),
-        image_url: helpers.asset_url('logo')
+        image_url: helpers.asset_url('logo.png')
         # js lowercamelCase the name of the key
       }
     end
